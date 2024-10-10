@@ -9,9 +9,9 @@ processors:
   batch:
 
 exporters:
-  debug:
-    verbosity: detailed
-    sampling_thereafter: 2
+  # debug:
+  #   verbosity: detailed
+  #   sampling_thereafter: 2
   prometheus:
     endpoint: 0.0.0.0:8889
     const_labels:
@@ -23,8 +23,10 @@ exporters:
     endpoint: "http://jaeger:4317"
     tls:
       insecure: true
-  # otlp:
-  #   endpoint: otelcol:4317
+  otlp:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
 
 extensions:
   health_check:
@@ -37,9 +39,10 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch]
-      # exporters: [otlp]
-      exporters: [prometheus, debug]
+      # exporters: [prometheus, debug]
+      exporters: [prometheus]
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [zipkin, otlp/jaeger, debug]
+      # exporters: [zipkin, otlp/jaeger, otlp, debug]
+      exporters: [zipkin, otlp/jaeger, otlp]
