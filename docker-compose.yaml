@@ -16,8 +16,6 @@ services:
       - "55679:55679" # zpages extension
     depends_on:
       - prometheus
-      - jaeger
-      - zipkin
       - tempo
 
   prometheus:
@@ -38,22 +36,6 @@ services:
     ports:
       - "3000:3000"
 
-  jaeger:
-    container_name: jaeger
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "16686:16686"
-      - "14268"
-      - "14250"
-      - "4317"
-      - "4318"
-  
-  zipkin:
-    container_name: zipkin
-    image: openzipkin/zipkin:latest
-    ports:
-      - "9411:9411"
-  
   # Tempo runs as user 10001, and docker compose creates the volume as root.
   # As such, we need to chown the volume in order for Tempo to start correctly.
   init:
