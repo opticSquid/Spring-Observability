@@ -9,6 +9,9 @@ processors:
   batch:
 
 exporters:
+  debug:
+    verbosity: detailed
+    sampling_thereafter: 2
   prometheus:
     endpoint: 0.0.0.0:8889
     const_labels:
@@ -35,8 +38,8 @@ service:
       receivers: [otlp]
       processors: [batch]
       # exporters: [otlp]
-      exporters: [prometheus]
+      exporters: [prometheus, debug]
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [zipkin,otlp/jaeger]
+      exporters: [zipkin, otlp/jaeger, debug]
