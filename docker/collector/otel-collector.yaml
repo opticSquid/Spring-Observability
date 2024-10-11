@@ -5,6 +5,7 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
+        
 processors:
   batch:
 
@@ -16,10 +17,13 @@ exporters:
     endpoint: 0.0.0.0:8889
     const_labels:
       origin: otel-collector
+  # this is tempo
   otlp:
     endpoint: tempo:4317
     tls:
       insecure: true
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"
 
 extensions:
   health_check:
@@ -39,3 +43,6 @@ service:
       processors: [batch]
       # exporters: [zipkin, otlp/jaeger, otlp, debug]
       exporters: [otlp]
+    logs:
+      receivers: [otlp]
+      exporters: [loki]

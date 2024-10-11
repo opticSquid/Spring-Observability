@@ -17,6 +17,7 @@ services:
     depends_on:
       - prometheus
       - tempo
+      - loki
 
   prometheus:
     container_name: prometheus
@@ -39,6 +40,7 @@ services:
   # Tempo runs as user 10001, and docker compose creates the volume as root.
   # As such, we need to chown the volume in order for Tempo to start correctly.
   init:
+    container_name: tempo-init
     image: &tempoImage grafana/tempo:latest
     user: root
     entrypoint:
@@ -61,6 +63,16 @@ services:
       - "4317"
     depends_on:
       - init
+      - prometheus
+      - loki
+
+  loki:
+    container_name: loki
+    image: grafana/loki:latest
+    command:
+      - -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
 
 volumes:
     prometheusData:
